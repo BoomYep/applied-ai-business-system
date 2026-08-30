@@ -4,8 +4,19 @@ import { useState } from "react";
 import { requestSchema, type RequestFormData } from "@/lib/validation/request.schema";
 import { Field } from "@/components/ui/Field";
 import { Button } from "@/components/ui/Button";
+import type { AnalysisResult } from "@/types";
 
-export function IntakeForm() {
+interface IntakeFormProps {
+  onAnalysisComplete: (data: {
+    customerName: string;
+    email: string;
+    originalMessage: string;
+    analysis: AnalysisResult;
+    saveWarning?: string;
+  }) => void;
+}
+
+export function IntakeForm({ onAnalysisComplete }: IntakeFormProps) {
   const [formData, setFormData] = useState<RequestFormData>({
     customerName: "",
     email: "",
@@ -93,7 +104,44 @@ export function IntakeForm() {
       }
 
       const analysis = await response.json();
-      console.log("Analysis result:", analysis);
+
+      let saveWarning: string | undefined;
+
+      try {
+        const saveResponse = await fetch("/api/requests", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            customerName: validatedData.customerName,
+            email: validatedData.email,
+            phone: validatedData.phone,
+            message: validatedData.message,
+            intent: analysis.intent,
+            priority: analysis.priority,
+            department: analysis.department,
+            suggestedAction: analysis.suggestedAction,
+            summary: analysis.summary,
+          }),
+        });
+
+        if (!saveResponse.ok) {
+          saveWarning =
+            "Analysis completed successfully, but could not be saved to the database.";
+        }
+      } catch {
+        saveWarning =
+          "Analysis completed successfully, but could not be saved to the database.";
+      }
+
+      onAnalysisComplete({
+        customerName: validatedData.customerName,
+        email: validatedData.email,
+        originalMessage: validatedData.message,
+        analysis,
+        saveWarning,
+      });
 
       setIsSubmitting(false);
     } catch (err: unknown) {
