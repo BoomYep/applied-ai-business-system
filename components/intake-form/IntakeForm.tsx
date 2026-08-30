@@ -15,6 +15,7 @@ export function IntakeForm() {
 
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [apiError, setApiError] = useState<string | null>(null);
 
   const validateField = (name: keyof RequestFormData, value: string) => {
     try {
@@ -58,8 +59,41 @@ export function IntakeForm() {
     try {
       const validatedData = requestSchema.parse(formData);
       setIsSubmitting(true);
+      setApiError(null);
 
-      console.log("Validated form data:", validatedData);
+      const response = await fetch("/api/analyze", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ message: validatedData.message }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+
+        if (response.status === 429) {
+          const retryAfter = response.headers.get("Retry-After");
+          setApiError(
+            `${errorData.error}${retryAfter ? ` Please wait ${retryAfter} seconds.` : ""}`
+          );
+          setIsSubmitting(false);
+          return;
+        }
+
+        if (response.status === 422) {
+          setApiError(errorData.error);
+          setIsSubmitting(false);
+          return;
+        }
+
+        setApiError(errorData.error || "An error occurred");
+        setIsSubmitting(false);
+        return;
+      }
+
+      const analysis = await response.json();
+      console.log("Analysis result:", analysis);
 
       setIsSubmitting(false);
     } catch (err: unknown) {
@@ -73,6 +107,8 @@ export function IntakeForm() {
           fieldErrors[field] = error.message;
         });
         setErrors(fieldErrors);
+      } else {
+        setApiError("Network error. Please check your connection and try again.");
       }
       setIsSubmitting(false);
     }
@@ -154,6 +190,12 @@ export function IntakeForm() {
           </div>
         </div>
       </div>
+
+      {apiError && (
+        <div className="p-3 bg-priority-urgent/10 border border-priority-urgent/30 rounded-[var(--radius-md)] text-sm text-priority-urgent">
+          {apiError}
+        </div>
+      )}
 
       <Button
         type="submit"
