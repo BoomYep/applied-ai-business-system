@@ -149,6 +149,9 @@ export async function updateRequestStatus(
     .single();
 
   if (error) {
+    if (error.code === "PGRST116") {
+      throw new Error("Request not found");
+    }
     throw new Error(`Failed to update request status: ${error.message}`);
   }
 
