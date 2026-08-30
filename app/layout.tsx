@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import { Navigation } from "@/components/layout/Navigation";
 import "./globals.css";
 
 const inter = Inter({
@@ -16,9 +17,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en" className={`${inter.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col font-sans">
-        <div className="w-full max-w-[1100px] mx-auto px-4 sm:px-8 py-8">
+        <Navigation />
+        <main className="flex-1 w-full max-w-[1100px] mx-auto px-4 sm:px-8 py-8">
           {children}
-        </div>
+        </main>
       </body>
     </html>
   );
