@@ -2,7 +2,7 @@
 
 A reference implementation demonstrating how AI transforms unstructured customer requests into structured business workflows.
 
-**Live Demo:** [DEMO_URL_PLACEHOLDER](DEMO_URL_PLACEHOLDER)
+**Live Demo:** [https://applied-ai-business-system.vercel.app](https://applied-ai-business-system.vercel.app)
 
 ---
 
@@ -194,7 +194,7 @@ Even if application-level validation is bypassed, the database will reject inval
 
 | Technology | Purpose | Why This Choice |
 |------------|---------|-----------------|
-| **Next.js 15** | Full-stack framework | App Router with Server Components, API Routes, and serverless deployment. No separate backend needed. |
+| **Next.js 16** | Full-stack framework | App Router with Server Components, API Routes, and serverless deployment. No separate backend needed. |
 | **TypeScript** | Type safety | Compile-time validation of data structures. Zod schemas generate runtime types that match TypeScript types exactly. |
 | **Tailwind CSS** | Styling | Utility-first CSS with custom design tokens. Fast iteration without CSS-in-JS overhead. |
 | **Claude Haiku 4.5** | AI model | This is a short classification task, not a reasoning problem. Haiku is optimized for fast, low-cost classification. Using Opus or Sonnet would be the wrong engineering trade-off for this use case. |
@@ -275,7 +275,7 @@ See [docs/database.md](./docs/database.md) for the complete schema with grants a
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/YOUR_USERNAME/applied-ai-business-system.git
+   git clone https://github.com/BoomYep/applied-ai-business-system.git
    cd applied-ai-business-system
    ```
 
@@ -473,7 +473,7 @@ These are deliberate scope decisions for a portfolio demonstration, not oversigh
 
 - Portfolio: [https://belkys-web.vercel.app](https://belkys-web.vercel.app)
 - LinkedIn: [https://linkedin.com/in/belkyswilson](https://linkedin.com/in/belkyswilson)
-- GitHub: [@belkyswilson](https://github.com/belkyswilson)
+- GitHub: [@BoomYepAI](https://github.com/BoomYepAI)
 
 ---
 
